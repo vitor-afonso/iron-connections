@@ -3,42 +3,89 @@
 const mongoose = require('mongoose');
 const router = require("express").Router();
  
-const Post = require('../models/Post.model');
-const User = require('../models/User.model');
-const Comment = require('../models/Comment.model');
+const Posts = require('../models/Post.model');
+const Users = require('../models/User.model');
+const Comments = require('../models/Comment.model');
 
-router.get('/user/:userId', async (req, res, next) => {
+
+/************************** GET ONE USER *********************************/
+router.get('/users/:userId', async (req, res, next) => {
 
     try {
         
-        /* const response = await Post.find().populate("comments", "userId", "likes");
+        const response = await Users.find().populate("posts").populate("followers");
         
-        res.status(200).json(response); */
+        res.status(200).json(response);
 
     } catch (error) {
         res.status(500).json({message: error});
     }
 });
 
-router.post('/user', async (req, res, next) => {
+
+/************************** CREATE NEW USER *********************************/
+router.post('/users', async (req, res, next) => {
     
     try {
 
-        /* const { title, body, userId, imageUrl } = req.body;
+        const { username, password, email } = req.body;
     
-        if(!title || !body) {
+        if(!username || !password || !email) {
 
             res.status(401).json({message: "Missing fields"});
             return;
         }
 
-        let response = await Post.create({ title, body, userId: userId, likes: []}); */
+        let response = await Users.create({ username, password, email, followers: [], posts: [] });
     
 
         res.status(200).json(response);
           
     } catch (error) {
     
+        res.status(500).json({message: error});
+    }
+});
+
+
+/************************** UPDATE USER *********************************/
+router.put('/users/:userId', async (req, res, next) => {
+
+    try {
+
+        const { userId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            res.status(401).json({ message: 'Specified id is not valid' });
+            return;
+        }
+
+        let response = await Users.findByIdAndUpdate(userId, req.body, { new: true });
+        res.status(200).json({message: `User successfully updated  => ${response}.`});
+
+        
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+});
+
+
+/************************** DELETE USER *********************************/
+router.delete('/users/:userId', async (req, res, next) => {
+
+    try {
+        
+        const { userId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            res.status(401).json({ message: 'Specified id is not valid' });
+            return;
+        }
+        await Users.findByIdAndRemove(userId);
+
+        res.status(200).json({message: `User with id: ${req.params.userId} was deleted.`});
+        
+    } catch (error) {
         res.status(500).json({message: error});
     }
 });

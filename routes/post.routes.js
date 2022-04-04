@@ -79,7 +79,7 @@ router.put('/posts/:postId', async (req, res, next) => {
         }
 
         let response = await Posts.findByIdAndUpdate(postId, req.body, { new: true });
-        res.status(200).json({message: `Project successfully updated  => ${response}.`});
+        res.status(200).json({message: `Post successfully updated  => ${response}.`});
 
         
     } catch (error) {
@@ -100,7 +100,7 @@ router.delete('/posts/:postId', async (req, res, next) => {
         }
         await Posts.findByIdAndRemove(postId);
 
-        res.status(200).json({message: `Project with id: ${req.params.postId} was deleted.`});
+        res.status(200).json({message: `Post with id: ${req.params.postId} was deleted.`});
         
     } catch (error) {
         res.status(500).json({message: error});
