@@ -2,24 +2,28 @@
  
 const mongoose = require('mongoose');
 const router = require("express").Router();
- 
-const Post = require('../models/Post.model');
-const User = require('../models/User.model');
-const Comment = require('../models/Comment.model');
 
-router.post('/posts/:id/comment', async (req, res, next) => {
+const Posts = require('../models/Post.model');
+const Users = require('../models/User.model');
+const Comments = require('../models/Comment.model');
+
+
+router.post('/posts/:postId/comment', async (req, res, next) => {
     
     try {
+        
+        const { content, userId } = req.body;
 
-        /* const { title, body, userId, imageUrl } = req.body;
-    
-        if(!title || !body) {
+        const {postId} = req.params;
+
+        if(!content || !postId || !userId) {
 
             res.status(401).json({message: "Missing fields"});
             return;
         }
 
-        let response = await Post.create({ title, body, userId: userId, likes: []}); */
+        let response = await Comments.create({ content, userId });
+        let userResponse = await Posts.findByIdAndUpdate(postId, { $push: { comments: response._id }}, {new: true} );
 
         res.status(200).json(response);
           

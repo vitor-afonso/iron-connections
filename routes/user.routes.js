@@ -11,9 +11,11 @@ const Comments = require('../models/Comment.model');
 /************************** GET ONE USER *********************************/
 router.get('/users/:userId', async (req, res, next) => {
 
+    const {userId} = req.params;
+
     try {
-        
-        const response = await Users.find().populate("posts").populate("followers");
+        //populates nested arrays
+        const response = await Users.findById(userId).populate("followers").populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
         
         res.status(200).json(response);
 
