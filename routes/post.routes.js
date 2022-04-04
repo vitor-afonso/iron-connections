@@ -8,11 +8,16 @@ const Users = require('../models/User.model');
 const Comments = require('../models/Comment.model');
 
 
+const {isAuthenticated} = require("../middleware/jwt.middleware.js");
+
+
 /************************** GET ALL POSTS *********************************/
-router.get('/posts', async (req, res, next) => {
+router.get('/posts', /* isAuthenticated, */ async (req, res, next) => {
     try {
         
-        const response = await Posts.find().populate("comments").populate("userId").populate("likes");
+        const response = await Posts.find()
+        .populate("likes")
+        .populate({path: "comments", populate: {path: "userId"}});
         
         res.status(200).json(response);
 
@@ -33,7 +38,9 @@ router.get('/posts/:postId', async (req, res, next) => {
             return;
         }
 
-        let response = await Posts.findById(postId).populate("likes").populate("comments");
+        let response = await Posts.findById(postId)
+        .populate("likes")
+        .populate({path: "comments", populate: {path: "userId"}});
         res.status(200).json(response);
 
     } catch (error) {
