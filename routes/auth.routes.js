@@ -53,7 +53,6 @@ router.post("/signup", async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     // Create the new user in the database
-    // We return a pending promise, which allows us to chain another `then`
     const createdUser = await User.create({
       email,
       username,

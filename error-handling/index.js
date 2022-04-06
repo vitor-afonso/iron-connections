@@ -15,7 +15,7 @@ module.exports = (app) => {
       res
       .status(401)
       .json({
-        message: "Uh oh! Your token is invalid.",
+        message: "Uh oh! Invalid token.",
       }); 
     }
 
