@@ -116,7 +116,7 @@ router.post("/login", async (req, res, next) => {
       }
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
 });
 
@@ -124,8 +124,9 @@ router.post("/login", async (req, res, next) => {
 
 router.get('/verify', isAuthenticated, (req, res, next) => {
 
-  /* console.log(`req.payload`, req.payload); */
-
+  console.log(`req.payload`, req.payload);
   res.status(200).json(req.payload);
+
 });
+
 module.exports = router;
