@@ -3,19 +3,17 @@
 const mongoose = require('mongoose');
 const router = require("express").Router();
  
-const Posts = require('../models/Post.model');
-const Users = require('../models/User.model');
-const Comments = require('../models/Comment.model');
-
+const Post = require('../models/Post.model');
+const User = require('../models/User.model');
 
 const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 
 
 /************************** GET ALL POSTS *********************************/
-router.get('/posts', /* isAuthenticated, */ async (req, res, next) => {
+router.get('/posts', isAuthenticated,  async (req, res, next) => {
     try {
         
-        const response = await Posts.find()
+        const response = await Post.find()
         .populate("likes")
         .populate({path: "comments", populate: {path: "userId"}});
         
@@ -27,7 +25,7 @@ router.get('/posts', /* isAuthenticated, */ async (req, res, next) => {
 });
 
 /************************** GET ONE POST *********************************/
-router.get('/posts/:postId', async (req, res, next) => {
+router.get('/posts/:postId',isAuthenticated, async (req, res, next) => {
 
     const { postId } = req.params;
 
@@ -38,7 +36,7 @@ router.get('/posts/:postId', async (req, res, next) => {
             return;
         }
 
-        let response = await Posts.findById(postId)
+        let response = await Post.findById(postId)
         .populate("likes")
         .populate({path: "comments", populate: {path: "userId"}});
         res.status(200).json(response);
@@ -50,7 +48,7 @@ router.get('/posts/:postId', async (req, res, next) => {
 
 
 /************************** CREATE NEW POST *********************************/
-router.post('/posts', async (req, res, next) => {
+router.post('/posts', isAuthenticated, async (req, res, next) => {
     
     try {
 
@@ -62,8 +60,8 @@ router.post('/posts', async (req, res, next) => {
             return;
         }
 
-        let response = await Posts.create({ title, body, likes: []});
-        let userResponse = await Users.findByIdAndUpdate(userId, { $push: { posts: response._id }}, {new: true} );
+        let response = await Post.create({ title, body, likes: []});
+        await User.findByIdAndUpdate(userId, { $push: { posts: response._id }}, {new: true} );
 
         res.status(200).json(response);
           
@@ -74,7 +72,7 @@ router.post('/posts', async (req, res, next) => {
 });
 
 /************************** UPDATE POST *********************************/
-router.put('/posts/:postId', async (req, res, next) => {
+router.put('/posts/:postId', isAuthenticated, async (req, res, next) => {
 
     try {
 
@@ -85,7 +83,7 @@ router.put('/posts/:postId', async (req, res, next) => {
             return;
         }
 
-        let response = await Posts.findByIdAndUpdate(postId, req.body, { new: true });
+        let response = await Post.findByIdAndUpdate(postId, req.body, { new: true });
         res.status(200).json({message: `Post successfully updated  => ${response}.`});
 
         
@@ -95,7 +93,7 @@ router.put('/posts/:postId', async (req, res, next) => {
 });
 
 /************************** DELETE POST *********************************/
-router.delete('/posts/:postId', async (req, res, next) => {
+router.delete('/posts/:postId', isAuthenticated, async (req, res, next) => {
 
     try {
         
@@ -105,7 +103,8 @@ router.delete('/posts/:postId', async (req, res, next) => {
             res.status(401).json({ message: 'Specified id is not valid' });
             return;
         }
-        await Posts.findByIdAndRemove(postId);
+
+        await Post.findByIdAndRemove(postId);
 
         res.status(200).json({message: `Post with id: ${req.params.postId} was deleted.`});
         

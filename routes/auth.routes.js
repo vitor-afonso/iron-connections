@@ -2,9 +2,9 @@
 
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const Users = require("../models/User.model");
-
+const User = require("../models/User.model");
 const jwt = require("jsonwebtoken"); //<= to create and sign new JSON Web Tokens
+const { isAuthenticated } = require('./../middleware/jwt.middleware.js');
 
 const saltRounds = 10;
 
@@ -40,7 +40,7 @@ router.post("/signup", async (req, res, next) => {
     }
 
     // Check the users collection if a user with the same email already exists
-    let foundUser = await Users.findOne({ email });
+    let foundUser = await User.findOne({ email });
 
     // If the user with the same email already exists, send an error response
     if (foundUser) {
@@ -54,7 +54,7 @@ router.post("/signup", async (req, res, next) => {
 
     // Create the new user in the database
     // We return a pending promise, which allows us to chain another `then`
-    const createdUser = await Users.create({
+    const createdUser = await User.create({
       email,
       username,
       password: hashedPassword,
@@ -75,48 +75,58 @@ router.post("/signup", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   
     try {
-        const { password, email } = req.body;
+      const { password, email } = req.body;
 
-        // Check if email or password are provided as empty string
-        if (!password || !email) {
-            res.status(400).json({ message: "Provide email and password." });
-            return;
-        }
+      // Check if email or password are provided as empty string
+      if (!password || !email) {
+          res.status(400).json({ message: "Provide email and password." });
+          return;
+      }
 
-        // Check the users collection if a user with the same email exists
-        let foundUser = await Users.findOne({ email });
+      // Check the users collection if a user with the same email exists
+      let foundUser = await User.findOne({ email });
 
-        if (!foundUser) {
-            // If the user is not found, send an error response
-            res.status(401).json({ message: "Invalid login" });
-            return;
-        }
+      if (!foundUser) {
+          // If the user is not found, send an error response
+          res.status(401).json({ message: "Invalid login" });
+          return;
+      }
 
-        // Compare the provided password with the one saved in the database
-        const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
+      // Compare the provided password with the one saved in the database
+      const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
 
-        if (passwordCorrect) {
-            // Deconstruct the user object to omit the password
-            const { _id, email, username } = foundUser;
+      if (passwordCorrect) {
+        // Deconstruct the user object to omit the password
+        const { _id, email, username } = foundUser;
 
-            // Create an object that will be set as the token payload
-            const payload = { _id, email, username };
+        // Create an object that will be set as the token payload
+        const payload = { _id, email, username };
 
-            // Create and sign the token
-            const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
-            algorithm: "HS256",
-            expiresIn: "6h",
-            });
+        // Create and sign the token
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        algorithm: "HS256",
+        expiresIn: "6h",
+        });
 
-            // Send the token as the response
-            res.status(200).json({ authToken: authToken });
-        } else {
-            res.status(401).json({ message: "Invalid login" });
-        }
+        // Send the token as the response
+        res.status(200).json({ authToken: authToken });
+        
+      } else {
+        
+        res.status(401).json({ message: "Invalid login" });
+      }
 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
+
+
+router.get('/verify', isAuthenticated, (req, res, next) => {
+
+  /* console.log(`req.payload`, req.payload); */
+
+  res.status(200).json(req.payload);
+});
 module.exports = router;

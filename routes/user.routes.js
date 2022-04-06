@@ -3,19 +3,18 @@
 const mongoose = require('mongoose');
 const router = require("express").Router();
  
-const Posts = require('../models/Post.model');
-const Users = require('../models/User.model');
-const Comments = require('../models/Comment.model');
+const User = require('../models/User.model');
 
+const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 
 /************************** GET ONE USER *********************************/
-router.get('/users/:userId', async (req, res, next) => {
+router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     const {userId} = req.params;
 
     try {
         //populates nested arrays
-        const response = await Users.findById(userId).populate("followers").populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
+        const response = await User.findById(userId).populate("followers").populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
         
         res.status(200).json(response);
 
@@ -26,7 +25,7 @@ router.get('/users/:userId', async (req, res, next) => {
 
 
 /************************** CREATE NEW USER *********************************/
-router.post('/users', async (req, res, next) => {
+router.post('/users', isAuthenticated, async (req, res, next) => {
     
     try {
 
@@ -38,7 +37,7 @@ router.post('/users', async (req, res, next) => {
             return;
         }
 
-        let response = await Users.create({ username, password, email, followers: [], posts: [] });
+        let response = await User.create({ username, password, email, followers: [], posts: [] });
     
 
         res.status(200).json(response);
@@ -51,7 +50,7 @@ router.post('/users', async (req, res, next) => {
 
 
 /************************** UPDATE USER *********************************/
-router.put('/users/:userId', async (req, res, next) => {
+router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     try {
 
@@ -62,7 +61,7 @@ router.put('/users/:userId', async (req, res, next) => {
             return;
         }
 
-        let response = await Users.findByIdAndUpdate(userId, req.body, { new: true });
+        let response = await User.findByIdAndUpdate(userId, req.body, { new: true });
         res.status(200).json({message: `User successfully updated  => ${response}.`});
 
         
@@ -73,7 +72,7 @@ router.put('/users/:userId', async (req, res, next) => {
 
 
 /************************** DELETE USER *********************************/
-router.delete('/users/:userId', async (req, res, next) => {
+router.delete('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     try {
         
@@ -83,7 +82,7 @@ router.delete('/users/:userId', async (req, res, next) => {
             res.status(401).json({ message: 'Specified id is not valid' });
             return;
         }
-        await Users.findByIdAndRemove(userId);
+        await User.findByIdAndRemove(userId);
 
         res.status(200).json({message: `User with id: ${req.params.userId} was deleted.`});
         
