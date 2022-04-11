@@ -2,9 +2,9 @@
  
 const mongoose = require('mongoose');
 const router = require("express").Router();
- 
 const Post = require('../models/Post.model');
 const User = require('../models/User.model');
+const fileUploader = require("./../config/cloudinary.config");
 
 const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 
@@ -48,6 +48,24 @@ router.get('/posts/:postId',isAuthenticated, async (req, res, next) => {
 });
 
 
+// POST "/api/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+router.post("/upload", isAuthenticated, fileUploader.single("imageUrl"), (req, res, next) => {
+     
+    try {
+  
+      // Get the URL of the uploaded file and send it as a response.
+      // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+  
+      res.status(200).json({ fileUrl: req.file.path });
+  
+    } catch (error) {
+  
+      res.status(500).status({message: `Could not upload file! =>`, error});
+    }
+  
+});
+
+
 /************************** CREATE NEW POST *********************************/
 router.post('/posts', isAuthenticated, async (req, res, next) => {
     
@@ -61,7 +79,7 @@ router.post('/posts', isAuthenticated, async (req, res, next) => {
             return;
         }
 
-        let response = await Post.create({ title, body, userId, imageUrl, likes: []});
+        let response = await Post.create({ title, body, userId, imageUrl, likes: [], comments: []});
         await User.findByIdAndUpdate(userId, { $push: { posts: response._id }}, {new: true} );
 
         res.status(200).json(response);

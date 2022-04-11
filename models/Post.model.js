@@ -7,7 +7,6 @@ const postSchema = new Schema(
     title: String,
     body: {
       type: String,
-      /* required: true */
     },
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     imageUrl: {
