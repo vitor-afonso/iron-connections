@@ -15,6 +15,7 @@ router.get('/posts', isAuthenticated,  async (req, res, next) => {
         
         const response = await Post.find()
         .populate("likes")
+        .populate("userId")
         .populate({path: "comments", populate: {path: "userId"}});
         
         res.status(200).json(response);
@@ -60,7 +61,7 @@ router.post('/posts', isAuthenticated, async (req, res, next) => {
             return;
         }
 
-        let response = await Post.create({ title, body, likes: []});
+        let response = await Post.create({ title, body, userId, imageUrl, likes: []});
         await User.findByIdAndUpdate(userId, { $push: { posts: response._id }}, {new: true} );
 
         res.status(200).json(response);

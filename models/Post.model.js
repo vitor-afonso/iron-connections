@@ -9,10 +9,10 @@ const postSchema = new Schema(
       type: String,
       /* required: true */
     },
-    imageUrl: {
-      type: String,
-    },
     userId: { type: Schema.Types.ObjectId, ref: "User" },
+    imageUrl: {
+      type: String
+    },
     likes:  [{ type: Schema.Types.ObjectId, ref: "User" }],
     comments:  [{ type: Schema.Types.ObjectId, ref: "Comment" }]
   },

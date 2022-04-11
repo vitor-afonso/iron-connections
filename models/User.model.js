@@ -19,7 +19,7 @@ const userSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      /* default: '/images/default-user-profile.jpeg' */
+      default: '/images/default-profile.jpeg'
     },
     followers:  [{ type: Schema.Types.ObjectId, ref: "User" }],
     posts:  [{ type: Schema.Types.ObjectId, ref: "Post" }]
