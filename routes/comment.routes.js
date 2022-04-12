@@ -34,5 +34,25 @@ router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) =>
     }
 });
 
+/************************** DELETE COMMENT *********************************/
+router.delete('/posts/:postId/comment', isAuthenticated, async (req, res, next) => {
+
+    try {
+        
+        const commentId = req.query.commentId;
+
+        if (!mongoose.Types.ObjectId.isValid(commentId)) {
+            res.status(401).json({ message: 'Specified id is not valid' });
+            return;
+        }
+
+        await Comment.findByIdAndRemove(commentId);
+
+        res.status(200).json({message: `Post with id: ${req.params.commentId} was deleted.`});
+        
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+});
 
 module.exports = router;
