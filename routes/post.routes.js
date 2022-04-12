@@ -71,15 +71,15 @@ router.post('/posts', isAuthenticated, async (req, res, next) => {
     
     try {
 
-        const { title, body, userId, imageUrl } = req.body;
+        const { body, userId, imageUrl } = req.body;
     
-        if(!title || !body) {
+        if(!userId || !body) {
 
             res.status(401).json({message: "Missing fields"});
             return;
         }
 
-        let response = await Post.create({ title, body, userId, imageUrl, likes: [], comments: []});
+        let response = await Post.create({ body, userId, imageUrl, likes: [], comments: []});
         await User.findByIdAndUpdate(userId, { $push: { posts: response._id }}, {new: true} );
 
         res.status(200).json(response);
