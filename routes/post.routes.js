@@ -13,7 +13,7 @@ const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 router.get('/posts', isAuthenticated,  async (req, res, next) => {
     try {
         
-        const response = await Post.find()
+        const response = await Post.find().sort('-createdAt')
         .populate("likes")
         .populate("userId")
         .populate({path: "comments", populate: {path: "userId"}});
