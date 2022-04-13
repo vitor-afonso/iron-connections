@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const router = require("express").Router();
  
 const User = require('../models/User.model');
+const Comment = require('../models/Comment.model');
 
 const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 
@@ -13,8 +14,16 @@ router.get('/users', isAuthenticated, async (req, res, next) => {
         //populates nested arrays
         const response = await User.find()
         .populate("followers")
-        .populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
-        
+        .populate({
+            path: "posts", 
+            populate: [{
+            path: 'comments',
+            model: 'Comment'
+           },{
+             path: 'userId',
+             model: 'User'
+           }]
+        });
         res.status(200).json(response);
 
     } catch (error) {
@@ -29,7 +38,19 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     try {
         //populates nested arrays
-        const response = await User.findById(userId).populate("followers").populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
+        const response = await User.findById(userId)
+        .populate("followers")
+        .populate({
+            path: "posts", 
+            populate: [{
+                path: 'comments',
+                model: 'Comment',
+                populate: {path: "userId"}
+           },{
+                path: 'userId',
+                model: 'User'
+           }]
+        });
         
         res.status(200).json(response);
 
