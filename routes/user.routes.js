@@ -7,6 +7,21 @@ const User = require('../models/User.model');
 
 const {isAuthenticated} = require("../middleware/jwt.middleware.js");
 
+router.get('/users', isAuthenticated, async (req, res, next) => {
+
+    try {
+        //populates nested arrays
+        const response = await User.find()
+        .populate("followers")
+        .populate({path: "posts", populate: {path: "comments", populate: {path: "userId"}}});
+        
+        res.status(200).json(response);
+
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+});
+
 /************************** GET ONE USER *********************************/
 router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
 
