@@ -40,6 +40,7 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
         //populates nested arrays
         const response = await User.findById(userId)
         .populate("followers")
+        .populate("posts")
         .populate({
             path: "posts", 
             populate: [{
@@ -50,8 +51,8 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
                 path: 'userId',
                 model: 'User'
            }]
-        });
-        
+        })
+        .sort({ createdAt: -1 });
         res.status(200).json(response);
 
     } catch (error) {
