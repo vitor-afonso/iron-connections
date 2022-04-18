@@ -116,16 +116,29 @@ router.put('/posts/:postId', isAuthenticated, async (req, res, next) => {
 router.delete('/posts/:postId', isAuthenticated, async (req, res, next) => {
 
     try {
+        //need userID to remove postId from array of postsId
         
         const { postId } = req.params;
+        
 
         if (!mongoose.Types.ObjectId.isValid(postId)) {
             res.status(401).json({ message: 'Specified id is not valid' });
             return;
         }
 
+        let postToDelete = await Post.findById(postId);
+        
+
         await Post.findByIdAndRemove(postId);
 
+        let postAuthor = await User.findById(postToDelete.userId);
+
+        await User.findByIdAndUpdate(postAuthor._id, { posts: postAuthor.posts.filter((onePost) => {
+              
+            return onePost.toString() != postId;
+        })});
+
+        
         res.status(200).json({message: `Post with id: ${req.params.postId} was deleted.`});
         
     } catch (error) {

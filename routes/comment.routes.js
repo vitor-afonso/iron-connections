@@ -2,7 +2,7 @@
  
 const mongoose = require('mongoose');
 const router = require("express").Router();
-
+const User = require('../models/User.model');
 const Post = require('../models/Post.model');
 const Comment = require('../models/Comment.model');
 
@@ -35,11 +35,12 @@ router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) =>
 });
 
 /************************** DELETE COMMENT *********************************/
-router.delete('/posts/:postId/comment', isAuthenticated, async (req, res, next) => {
+router.delete('/posts/:postId/comment/delete', isAuthenticated, async (req, res, next) => {
 
     try {
         
         const commentId = req.query.commentId;
+        const { postId } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(commentId)) {
             res.status(401).json({ message: 'Specified id is not valid' });
@@ -47,6 +48,13 @@ router.delete('/posts/:postId/comment', isAuthenticated, async (req, res, next) 
         }
 
         await Comment.findByIdAndRemove(commentId);
+
+        let postParent = await Post.findById(postId);
+
+        await Post.findByIdAndUpdate(postParent._id, { comments: postParent.comments.filter((oneComment) => {
+              
+            return oneComment.toString() != commentId;
+        })});
 
         res.status(200).json({message: `Post with id: ${req.params.commentId} was deleted.`});
         
