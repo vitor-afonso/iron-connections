@@ -13,7 +13,7 @@ router.get('/users', isAuthenticated, async (req, res, next) => {
     try {
         //populates nested arrays
         const response = await User.find()
-        .populate("followers")
+        
         .populate({
             path: "posts", 
             populate: [{
@@ -89,6 +89,7 @@ router.post('/users', isAuthenticated, async (req, res, next) => {
 /************************** UPDATE USER *********************************/
 router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
 
+
     try {
 
         const { userId } = req.params;
@@ -98,8 +99,36 @@ router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
             return;
         }
 
-        let response = await User.findByIdAndUpdate(userId, req.body, { new: true });
+        if (req.body) {
+            
+            let response = await User.findByIdAndUpdate(userId, req.body, { new: true });
+            res.status(200).json({message: `User successfully updated  => ${response}.`});
+        }
+
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+});
+
+/************************** UPDATE USER FOLLOWERS *********************************/
+router.put('/add-follower/:userId', isAuthenticated, async (req, res, next) => {
+
+    let followerId = req.query.followerId;
+
+    try {
+
+        const { userId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            res.status(401).json({ message: 'Specified id is not valid' });
+            return;
+        }
+
+        
+        let response = await User.findByIdAndUpdate(userId, {$push: { followers: followerId }}, { new: true });
+        let response2 = await User.findByIdAndUpdate(followerId, {$push: { followers: userId }}, { new: true });
         res.status(200).json({message: `User successfully updated  => ${response}.`});
+        
 
         
     } catch (error) {
