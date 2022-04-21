@@ -136,6 +136,31 @@ router.put('/add-follower/:userId', isAuthenticated, async (req, res, next) => {
     }
 });
 
+/************************** REMOVE USER FOLLOWERS *********************************/
+router.put('/remove-follower/:userId', isAuthenticated, async (req, res, next) => {
+
+    let followerId = req.query.followerId;
+
+    try {
+
+        const { userId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            res.status(401).json({ message: 'Specified id is not valid' });
+            return;
+        }
+
+        
+        let response = await User.findByIdAndUpdate(userId, {$pull: { followers: followerId }}, { new: true });
+        /* let response2 = await User.findByIdAndUpdate(followerId, {$pull: { followers: new ObjectId(userId) }}, { new: true }); */
+        res.status(200).json({message: `User successfully updated  => ${response}.`});
+        
+
+        
+    } catch (error) {
+        res.status(500).json({message: error});
+    }
+});
 
 /************************** DELETE USER *********************************/
 router.delete('/users/:userId', isAuthenticated, async (req, res, next) => {
