@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
   {
@@ -19,11 +19,16 @@ const userSchema = new Schema(
     },
     imageUrl: {
       type: String,
-      default: '/images/default-profile.jpeg'
+      default: '/images/default-profile.jpeg',
     },
-    followers:  [{ type: Schema.Types.ObjectId, ref: "User" }],
-    posts:  [{ type: Schema.Types.ObjectId, ref: "Post" }]
-    
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    notifications: [
+      {
+        type: String,
+      },
+    ],
+    visitedNotifications: false,
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -31,4 +36,4 @@ const userSchema = new Schema(
   }
 );
 
-module.exports = model("User", userSchema);
+module.exports = model('User', userSchema);
