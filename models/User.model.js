@@ -23,11 +23,7 @@ const userSchema = new Schema(
     },
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-    notifications: [
-      {
-        type: String,
-      },
-    ],
+    notifications: [{ type: String }],
     visitedNotifications: false,
   },
   {
