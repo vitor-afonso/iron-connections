@@ -99,7 +99,7 @@ router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
 });
 
 /************************** ADD USER FOLLOWERS *********************************/
-router.put('/add-follower/:userId', isAuthenticated, async (req, res, next) => {
+router.put('/users/:userId/add-follower', isAuthenticated, async (req, res, next) => {
   let followerId = req.query.followerId;
 
   try {
@@ -119,7 +119,7 @@ router.put('/add-follower/:userId', isAuthenticated, async (req, res, next) => {
 });
 
 /************************** REMOVE USER FOLLOWERS *********************************/
-router.put('/remove-follower/:userId', isAuthenticated, async (req, res, next) => {
+router.put('/users/:userId/remove-follower', isAuthenticated, async (req, res, next) => {
   let followerId = req.query.followerId;
 
   try {
@@ -131,6 +131,26 @@ router.put('/remove-follower/:userId', isAuthenticated, async (req, res, next) =
     }
 
     let response = await User.findByIdAndUpdate(userId, { $pull: { followers: followerId } }, { new: true });
+
+    res.status(200).json({ message: `User successfully updated  => ${response}.` });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+});
+
+/************************** REMOVE USER NOTIFICATION *********************************/
+router.put('/users/:userId/remove-notification', isAuthenticated, async (req, res, next) => {
+  let notificationId = req.query.notificationId;
+
+  try {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(401).json({ message: 'Specified id is not valid' });
+      return;
+    }
+
+    let response = await User.findByIdAndUpdate(userId, { $pull: { notifications: notificationId } }, { new: true });
 
     res.status(200).json({ message: `User successfully updated  => ${response}.` });
   } catch (error) {
