@@ -23,11 +23,9 @@ const userSchema = new Schema(
     },
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-    notifications: [{ type: String }],
-    visitedNotifications: {
-      type: Boolean,
-      default: false,
-    },
+    notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
+    likes: [{ type: Schema.Types.ObjectId, ref: 'Like' }],
+    visitedNotifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

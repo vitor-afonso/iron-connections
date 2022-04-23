@@ -5,6 +5,7 @@ const router = require('express').Router();
 
 const User = require('../models/User.model');
 const Comment = require('../models/Comment.model');
+const Notification = require('../models/Notification.model');
 
 const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 
@@ -112,25 +113,6 @@ router.put('/add-follower/:userId', isAuthenticated, async (req, res, next) => {
     let response = await User.findByIdAndUpdate(userId, { $push: { followers: followerId } }, { new: true });
 
     res.status(200).json({ message: `User successfully updated  => ${response}.` });
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
-});
-/************************** UPDATE USER FOLLOWERS NOTIFICATION *********************************/
-router.put('/users/:userId/notification', isAuthenticated, async (req, res, next) => {
-  let notification = req.body.notification;
-
-  try {
-    const { userId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      res.status(401).json({ message: 'Specified id is not valid' });
-      return;
-    }
-
-    let response = await User.findByIdAndUpdate(userId, { $push: { notifications: notification }, visitedNotifications: false }, { new: true });
-
-    res.status(200).json({ message: `User notifications successfully updated  => ${response}.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }
