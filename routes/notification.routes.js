@@ -29,7 +29,7 @@ router.post('/notifications', isAuthenticated, async (req, res, next) => {
   }
 });
 
-/************************** UPDATE USER NOTIFICATIONS *********************************/
+/************************** UPDATE ADD USER NOTIFICATIONS *********************************/
 router.put('/notifications/:userId', isAuthenticated, async (req, res, next) => {
   let notificationId = req.body.notificationId;
 
@@ -50,20 +50,16 @@ router.put('/notifications/:userId', isAuthenticated, async (req, res, next) => 
 });
 
 /************************** REMOVE NOTIFICATION *********************************/
-router.put('/notifications/:userId/remove', isAuthenticated, async (req, res, next) => {
-  let notificationId = req.body.notificationId;
-
+router.delete('/notifications/:notificationId', isAuthenticated, async (req, res, next) => {
+  const { notificationId } = req.params; // <= id of user that will receive notification
   try {
-    const { userId } = req.params; // <= id of user that will receive notification
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!mongoose.Types.ObjectId.isValid(notificationId)) {
       res.status(401).json({ message: 'Specified id is not valid' });
       return;
     }
+    let response = await Notification.findByIdAndRemove(notificationId);
 
-    let response = await User.findByIdAndUpdate(notificationId, { $pull: { notifications: notificationId } }, { new: true });
-
-    res.status(200).json({ message: `User notifications successfully updated  => ${response}.` });
+    res.status(200).json({ message: `Notification with id: ${notificationId} was deleted.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }

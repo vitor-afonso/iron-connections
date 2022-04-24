@@ -152,7 +152,7 @@ router.put('/users/:userId/remove-notification', isAuthenticated, async (req, re
 
     let response = await User.findByIdAndUpdate(userId, { $pull: { notifications: notificationId } }, { new: true });
 
-    res.status(200).json({ message: `User successfully updated  => ${response}.` });
+    res.status(200).json({ message: `User notifications successfully updated  => ${response}.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }
