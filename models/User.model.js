@@ -24,7 +24,7 @@ const userSchema = new Schema(
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
-    likes: [{ type: Schema.Types.ObjectId, ref: 'Like' }],
+    likes: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     visitedNotifications: { type: Boolean, default: false },
   },
   {

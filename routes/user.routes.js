@@ -138,6 +138,46 @@ router.put('/users/:userId/remove-follower', isAuthenticated, async (req, res, n
   }
 });
 
+/************************** UPDATE USER LIKES ADD *********************************/
+router.put('/users/:userId/add-like', isAuthenticated, async (req, res, next) => {
+  let postId = req.body.postId;
+
+  try {
+    const { userId } = req.params; // <= id of user that will receive notification
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(401).json({ message: 'Specified id is not valid' });
+      return;
+    }
+
+    let response = await User.findByIdAndUpdate(userId, { $push: { likes: postId } }, { new: true });
+
+    res.status(200).json({ message: `User likes successfully updated  => ${response}.` });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+});
+
+/************************** UPDATE USER LIKES REMOVE *********************************/
+router.put('/users/:userId/remove-like', isAuthenticated, async (req, res, next) => {
+  let postId = req.body.postId;
+
+  try {
+    const { userId } = req.params; // <= id of user that will receive notification
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(401).json({ message: 'Specified id is not valid' });
+      return;
+    }
+
+    let response = await User.findByIdAndUpdate(userId, { $pull: { likes: postId } }, { new: true });
+
+    res.status(200).json({ message: `User likes successfully updated  => ${response}.` });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+});
+
 /************************** REMOVE USER NOTIFICATION *********************************/
 router.put('/users/:userId/remove-notification', isAuthenticated, async (req, res, next) => {
   let notificationId = req.query.notificationId;

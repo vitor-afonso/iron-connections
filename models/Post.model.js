@@ -1,18 +1,18 @@
 // jshint esversion:9
 
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const postSchema = new Schema(
   {
     body: {
       type: String,
     },
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
     imageUrl: {
-      type: String
+      type: String,
     },
-    likes:  [{ type: Schema.Types.ObjectId, ref: "User" }],
-    comments:  [{ type: Schema.Types.ObjectId, ref: "Comment" }]
+    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -20,4 +20,4 @@ const postSchema = new Schema(
   }
 );
 
-module.exports = model("Post", postSchema);
+module.exports = model('Post', postSchema);
