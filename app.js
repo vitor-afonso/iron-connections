@@ -32,6 +32,9 @@ app.use('/api', commentRoutes);
 const notificationRoutes = require('./routes/notification.routes');
 app.use('/api', notificationRoutes);
 
+const messageRoutes = require('./routes/message.routes');
+app.use('/api', messageRoutes);
+
 const authRouter = require('./routes/auth.routes');
 app.use('/api', authRouter);
 
