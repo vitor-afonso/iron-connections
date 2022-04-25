@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const router = require('express').Router();
 
 const User = require('../models/User.model');
-const Comment = require('../models/Comment.model');
-const Notification = require('../models/Notification.model');
 
 const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 
@@ -36,23 +34,27 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
   const { userId } = req.params;
 
   try {
-    //populates nested arrays
     const response = await User.findById(userId)
       .populate('followers')
-      .populate('posts')
       .populate({
         path: 'posts',
         populate: [
           {
             path: 'comments',
             model: 'Comment',
-            populate: { path: 'userId' },
-          },
-          {
-            path: 'userId',
-            model: 'User',
+            populate: {
+              path: 'userId',
+              model: 'User',
+            },
           },
         ],
+      })
+      .populate({
+        path: 'notifications',
+        populate: {
+          path: 'postId',
+          model: 'Post',
+        },
       })
       .sort({ createdAt: -1 });
     res.status(200).json(response);
@@ -180,8 +182,8 @@ router.put('/users/:userId/remove-like', isAuthenticated, async (req, res, next)
 
 /************************** REMOVE USER NOTIFICATION *********************************/
 router.put('/users/:userId/remove-notification', isAuthenticated, async (req, res, next) => {
-  let notificationId = req.query.notificationId;
-
+  let { notificationId } = req.body;
+  console.log('notificationId', notificationId);
   try {
     const { userId } = req.params;
 

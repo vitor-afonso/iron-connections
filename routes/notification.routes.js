@@ -11,7 +11,7 @@ const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 /************************** GET ALL NOTIFICATIONS *********************************/
 router.get('/notifications', isAuthenticated, async (req, res, next) => {
   try {
-    const response = await Notification.find().populate('userId');
+    const response = await Notification.find().populate('userId').populate('postId');
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error });
@@ -59,7 +59,7 @@ router.delete('/notifications/:notificationId', isAuthenticated, async (req, res
     }
     let response = await Notification.findByIdAndRemove(notificationId);
 
-    res.status(200).json({ message: `Notification with id: ${notificationId} was deleted.` });
+    res.status(200).json({ message: `Notification with id: ${notificationId} was successfully deleted.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }
