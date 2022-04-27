@@ -50,8 +50,8 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
       .populate({
         path: 'notifications',
         populate: {
-          path: 'userId',
-          model: 'User',
+          path: 'postId',
+          model: 'Post',
         },
       })
       .sort({ createdAt: -1 });
