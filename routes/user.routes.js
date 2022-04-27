@@ -38,22 +38,20 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
       .populate('followers')
       .populate({
         path: 'posts',
-        populate: [
-          {
-            path: 'comments',
-            model: 'Comment',
-            populate: {
-              path: 'userId',
-              model: 'User',
-            },
+        populate: {
+          path: 'comments',
+          model: 'Comment',
+          populate: {
+            path: 'userId',
+            model: 'User',
           },
-        ],
+        },
       })
       .populate({
         path: 'notifications',
         populate: {
-          path: 'postId',
-          model: 'Post',
+          path: 'userId',
+          model: 'User',
         },
       })
       .sort({ createdAt: -1 });
