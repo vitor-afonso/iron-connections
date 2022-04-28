@@ -38,15 +38,18 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
       .populate('followers')
       .populate({
         path: 'posts',
-        populate: {
-          path: 'comments',
-          model: 'Comment',
-          populate: {
+        populate: [
+          {
+            path: 'comments',
+            model: 'Comment',
+          },
+          {
             path: 'userId',
             model: 'User',
           },
-        },
+        ],
       })
+
       .populate({
         path: 'notifications',
         populate: {

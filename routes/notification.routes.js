@@ -32,10 +32,10 @@ router.post('/notifications', isAuthenticated, async (req, res, next) => {
 /************************** UPDATE ADD USER NOTIFICATIONS *********************************/
 router.put('/notifications/:userId', isAuthenticated, async (req, res, next) => {
   let notificationId = req.body.notificationId;
-
+  console.log('notificationId :>> ', notificationId);
   try {
     const { userId } = req.params; // <= id of user that will receive notification
-
+    console.log('userId =>', userId);
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(401).json({ message: 'Specified id is not valid' });
       return;
