@@ -35,28 +35,36 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
 
   try {
     const response = await User.findById(userId)
-      .populate('followers')
-      .populate({
-        path: 'posts',
-        populate: [
-          {
-            path: 'comments',
-            model: 'Comment',
-          },
-          {
-            path: 'userId',
-            model: 'User',
-          },
-        ],
-      })
-
-      .populate({
-        path: 'notifications',
-        populate: {
-          path: 'postId',
-          model: 'Post',
+      .populate([
+        {
+          path: 'followers',
         },
-      })
+        {
+          path: 'posts',
+          populate: [
+            {
+              path: 'comments',
+              model: 'Comment',
+              populate: {
+                path: 'userId',
+                model: 'User',
+              },
+            },
+            {
+              path: 'userId',
+              model: 'User',
+            },
+          ],
+        },
+        {
+          path: 'notifications',
+          populate: {
+            path: 'postId',
+            model: 'Post',
+          },
+        },
+      ])
+
       .sort({ createdAt: -1 });
     res.status(200).json(response);
   } catch (error) {
