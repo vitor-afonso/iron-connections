@@ -11,7 +11,7 @@ const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 /************************** GET ALL NOTIFICATIONS *********************************/
 router.get('/notifications', isAuthenticated, async (req, res, next) => {
   try {
-    const response = await Notification.find().populate('userId').populate('postId');
+    const response = await Notification.find().populate('userId');
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error });
