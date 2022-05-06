@@ -58,8 +58,8 @@ router.post('/posts', isAuthenticated, async (req, res, next) => {
   try {
     const { body, userId, imageUrl } = req.body;
 
-    if (!userId || !body) {
-      res.status(401).json({ message: 'Missing fields' });
+    if ((!userId && body) || (!userId && imageUrl)) {
+      res.status(401).json({ message: 'Missing fields of post.' });
       return;
     }
 
