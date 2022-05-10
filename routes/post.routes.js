@@ -96,11 +96,17 @@ router.put('/posts/:postId/add-like', isAuthenticated, async (req, res, next) =>
   try {
     const { postId } = req.params; // <= id of post that will receive userId in the likes array
 
+    const posts = await Post.findById(postId);
+    const likesArr = posts.likes;
+
     if (!mongoose.Types.ObjectId.isValid(postId)) {
       res.status(401).json({ message: 'Specified id is not valid' });
       return;
     }
-
+    if (likesArr.includes(userId)) {
+      // <= prevents same user from adding more than one like to a post
+      return;
+    }
     let response = await Post.findByIdAndUpdate(postId, { $push: { likes: userId } }, { new: true });
 
     res.status(200).json({ message: `User likes successfully updated  => ${response}.` });

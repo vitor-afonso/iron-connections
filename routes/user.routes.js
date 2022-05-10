@@ -25,7 +25,7 @@ router.get('/users', isAuthenticated, async (req, res, next) => {
     });
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -68,7 +68,7 @@ router.get('/users/:userId', isAuthenticated, async (req, res, next) => {
       .sort({ createdAt: -1 });
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -105,7 +105,7 @@ router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
       res.status(200).json({ message: `User successfully updated  => ${response}.` });
     }
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -125,7 +125,7 @@ router.put('/users/:userId/add-follower', isAuthenticated, async (req, res, next
 
     res.status(200).json({ message: `User successfully updated  => ${response}.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -145,7 +145,7 @@ router.put('/users/:userId/remove-follower', isAuthenticated, async (req, res, n
 
     res.status(200).json({ message: `User successfully updated  => ${response}.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -165,7 +165,7 @@ router.put('/users/:userId/add-like', isAuthenticated, async (req, res, next) =>
 
     res.status(200).json({ message: `User likes successfully updated  => ${response}.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -185,7 +185,7 @@ router.put('/users/:userId/remove-like', isAuthenticated, async (req, res, next)
 
     res.status(200).json({ message: `User likes successfully updated  => ${response}.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -205,7 +205,7 @@ router.put('/users/:userId/remove-notification', isAuthenticated, async (req, re
 
     res.status(200).json({ message: `User notifications successfully updated  => ${response}.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
@@ -222,7 +222,7 @@ router.delete('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     res.status(200).json({ message: `User with id: ${req.params.userId} was deleted.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Ops!! Something whent wrong.' });
   }
 });
 
