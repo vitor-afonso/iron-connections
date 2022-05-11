@@ -18,7 +18,7 @@ let server = http.createServer(app);
 let io = app.io;
 io.attach(server, {
   cors: {
-    origin: process.env.ORIGIN,
+    origin: process.env.ORIGIN || 'http://localhost:3000',
     methods: ['GET', 'POST'],
   },
 });
