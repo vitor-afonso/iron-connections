@@ -31,7 +31,7 @@ router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) =>
 /************************** DELETE COMMENT *********************************/
 router.delete('/comments/:commentId', isAuthenticated, async (req, res, next) => {
   const { commentId } = req.params;
-  console.log('commentId to delete =>', commentId);
+  /* console.log('commentId to delete =>', commentId); */
   try {
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
       res.status(401).json({ message: 'Specified id is not valid' });

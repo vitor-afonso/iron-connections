@@ -159,34 +159,36 @@ router.delete('/posts/:postId', isAuthenticated, async (req, res, next) => {
       }),
     });
 
-    res.status(200).json({ message: `Post with id: ${req.params.postId} was deleted.` });
+    res.status(200).json({ message: `Post with id: ${req.params.postId} was deleted and user posts updated.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }
 });
 
-/************************** DELETE COMMENT FROM POST *********************************/
-router.delete('/posts/:postId/comment/delete', isAuthenticated, async (req, res, next) => {
+/************************** REMOVE COMMENT FROM POST *********************************/
+router.put('/posts/:postId/comment/delete', isAuthenticated, async (req, res, next) => {
   try {
     const commentId = req.query.commentId;
     const { postId } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      res.status(401).json({ message: 'Specified id is not valid' });
+      return;
+    }
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
       res.status(401).json({ message: 'Specified id is not valid' });
       return;
     }
 
-    await Comment.findByIdAndRemove(commentId);
+    let postFromDB = await Post.findById(postId);
 
-    let postParent = await Post.findById(postId);
-
-    await Post.findByIdAndUpdate(postParent._id, {
-      comments: postParent.comments.filter((oneComment) => {
+    await Post.findByIdAndUpdate(postFromDB._id, {
+      comments: postFromDB.comments.filter((oneComment) => {
         return oneComment.toString() != commentId;
       }),
     });
 
-    res.status(200).json({ message: `Comment with id: ${commentId} was deleted.` });
+    res.status(200).json({ message: `Comment with id: ${commentId} was deleted from post with id: ${postId}.` });
   } catch (error) {
     res.status(500).json({ message: error });
   }

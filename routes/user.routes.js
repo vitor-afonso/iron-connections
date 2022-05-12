@@ -192,7 +192,7 @@ router.put('/users/:userId/remove-like', isAuthenticated, async (req, res, next)
 /************************** REMOVE USER NOTIFICATION *********************************/
 router.put('/users/:userId/remove-notification', isAuthenticated, async (req, res, next) => {
   let { notificationId } = req.body;
-  console.log('notificationId', notificationId);
+  console.log('notification to be removed =>', notificationId);
   try {
     const { userId } = req.params;
 
