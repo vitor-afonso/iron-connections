@@ -20,6 +20,18 @@ const socketIo = require('socket.io');
 let io = socketIo();
 app.io = io;
 
+app.set('trust proxy', 1);
+
+const cors = require('cors');
+
+// controls a very specific header to pass headers from the frontend
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.ORIGIN || 'http://localhost:3000',
+  })
+);
+
 // 👇 Start handling routes here
 // Contrary to the views version, all routes are controlled from the routes/index.js
 const allRoutes = require('./routes/index.routes');
