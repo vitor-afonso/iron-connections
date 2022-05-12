@@ -15,22 +15,10 @@ const app = express();
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require('./config')(app);
 
-// const socketIo = require('socket.io');
+const socketIo = require('socket.io');
 
-// let io = socketIo();
-// app.io = io;
-
-app.set('trust proxy', 1);
-
-const cors = require('cors');
-
-// controls a very specific header to pass headers from the frontend
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.ORIGIN || 'http://localhost:3000' || 'https://ironconnections.netlify.app',
-  })
-);
+let io = socketIo();
+app.io = io;
 
 // 👇 Start handling routes here
 // Contrary to the views version, all routes are controlled from the routes/index.js
@@ -46,8 +34,8 @@ app.use('/api', userRoutes);
 const commentRoutes = require('./routes/comment.routes');
 app.use('/api', commentRoutes);
 
-// const notificationRoutes = require('./routes/notification.routes')(io);
-// app.use('/api', notificationRoutes);
+const notificationRoutes = require('./routes/notification.routes')(io);
+app.use('/api', notificationRoutes);
 
 const messageRoutes = require('./routes/message.routes');
 app.use('/api', messageRoutes);
