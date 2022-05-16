@@ -25,7 +25,7 @@ app.io = io;
 const allRoutes = require('./routes/index.routes');
 app.use('/api', allRoutes);
 
-const postRoutes = require('./routes/post.routes');
+const postRoutes = require('./routes/post.routes')(io);
 app.use('/api', postRoutes);
 
 const userRoutes = require('./routes/user.routes');

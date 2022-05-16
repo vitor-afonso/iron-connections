@@ -8,6 +8,7 @@ const Comment = require('../models/Comment.model');
 
 const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 
+/************************** CREATE COMMENT *********************************/
 router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) => {
   try {
     const { content, userId } = req.body;
