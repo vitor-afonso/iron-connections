@@ -13,9 +13,9 @@ router.post('/signup', async (req, res, next) => {
   try {
     const { email, password, username } = req.body;
 
-    // Check if email or password or name are provided as empty string
+    // Check if email or password or username are provided as empty string
     if (email === '' || password === '' || username === '') {
-      res.status(400).json({ message: 'Provide email, password and name' });
+      res.status(400).json({ message: 'Provide email, password and username' });
       return;
     }
 
@@ -109,7 +109,7 @@ router.post('/login', async (req, res, next) => {
       res.status(401).json({ message: 'Invalid login' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Something went wrong while trying to login.' });
   }
 });
 
