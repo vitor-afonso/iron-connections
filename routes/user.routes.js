@@ -102,7 +102,7 @@ router.put('/users/:userId', isAuthenticated, async (req, res, next) => {
 
     if (req.body) {
       let response = await User.findByIdAndUpdate(userId, req.body, { new: true });
-      res.status(200).json({ message: `User successfully updated  => ${response}.` });
+      res.status(200).json({ response });
     }
   } catch (error) {
     res.status(500).json({ message: 'Ops!! Something whent wrong.' });

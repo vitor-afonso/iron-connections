@@ -8,6 +8,17 @@ const Comment = require('../models/Comment.model');
 
 const { isAuthenticated } = require('../middleware/jwt.middleware.js');
 
+/************************** GET ALL COMMENTS *********************************/
+router.get('/comments', isAuthenticated, async (req, res, next) => {
+  try {
+    const response = await Comment.find().populate('userId');
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong while trying to get comments.' });
+  }
+});
+
 /************************** CREATE COMMENT *********************************/
 router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) => {
   try {
@@ -25,7 +36,7 @@ router.post('/posts/:postId/comment', isAuthenticated, async (req, res, next) =>
 
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Something went wrong while trying to create comment.' });
   }
 });
 
@@ -42,7 +53,7 @@ router.delete('/comments/:commentId', isAuthenticated, async (req, res, next) =>
 
     res.status(200).json({ message: `Comment with id: ${commentId} was successfully deleted.` });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: 'Something went wrong while trying to delete comment.' });
   }
 });
 
